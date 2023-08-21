@@ -322,6 +322,12 @@ public class Assignment2
     // If the number of months given to us are more than number disjoint connected components in the graph:
     //  return -1
 
+
+    /* 
+     * We are given N museums and 2 people.
+     * First person will choose the city such that it will have max museums
+     * Then the second person will chose the city such that it will have min number of museums
+     * */
     Scanner sc = new Scanner(System.in);
     int N = sc.nextInt();
     int M = sc.nextInt();
@@ -339,10 +345,27 @@ public class Assignment2
       museums[i] = sc.nextInt();
       mctr[i] = i;
     }
+
+    // Here we have sorted the 2 arrays,
+    // One containing the museums per city
+    // the other is its original counter
+    // The original counter is for the graph to start bfs from that node
+    // If the node is empty we can just use the museum[last element - i]
     sort(museums, mctr, 0, N-1);
     for (int i = 0; i < museums.length; i++)
       System.out.println(mctr[i] + ": " + museums[i]);
 
+    /*
+     * We will run the loop till K number of vacation months
+     * TODO:
+     *  - Better way to debug
+     *  - Error: Answer is little less than needed
+     *  - Possible reasons:
+     *    - counter confusion,
+     *    - Incorrect value is most probably being used
+     *    - We might be summing a particular value again because of n -- null condition
+     *  - Taking too much memory. Optimize
+     * */
     if (g.connectedNum() < K)
       System.out.println(-1);
     else
