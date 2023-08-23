@@ -11,7 +11,7 @@ class Edges {
   int source;
   int dest;
   int weight;
-  Edges (int source, int dest, int weight)
+  void addEdges (int source, int dest, int weight)
   {
     this.source = source;
     this.dest = dest;
@@ -84,11 +84,12 @@ class graph {
   int distance [];
   boolean visited [];
   private Node [] list;
+  Edges e = new Edges();
   graph (int v)
   {
-    distance = new int[n];
-    visited = new boolean[n];
-    for (int i = 0; i < n; i++)
+    distance = new int[v];
+    visited = new boolean[v];
+    for (int i = 0; i < v; i++)
     {
       distance[i] = -1;
       visited[i] = false;
@@ -106,7 +107,8 @@ class graph {
   //Since it a undirected graph,
   //Everytime we add u,v we must also add v,u
   void addEdges(int u, int v, int weights) {
-    Edges e = new Edges(u, v, weights);
+    e.addEdges(u - 1, v - 1, weights);
+    e.addEdges(v - 1, u - 1, weights);
     list[u - 1].add(v - 1);
     list[v - 1].add(u - 1);
   }
@@ -146,6 +148,7 @@ class graph {
    * - Keep track of the color array for differentiating how many distinct components are present.
    *    - Implemented this in a different function
    * - Node to retuurn the tree*/
+   /*
   Node BFS(int s) {  
     // initializing all the local vars till first loop
     boolean [] discovered = new boolean[this.v];
@@ -180,12 +183,14 @@ class graph {
     }
     return bfs;
   }
+  */
 
   /* Find a way to calculate number of connected components in a connected components
    * we use the color array. In a loop call the bfs for 0 and append the color array as and when 
    * the connected components of that particular node are discovered. If already discovered, increment
    * the counter, else run bfs on that node.
    * */
+   /*
   int connectedNum () {
     for (int i = 0; i < color.length ; i++)
     {
@@ -205,9 +210,32 @@ class graph {
     }
     return sum;
   }
+  */
+
+/*
   int shortestPath(int s)
   {
     visited[s -1] = true;
 
+  }
+  */
+}
+
+public class dij
+{
+
+  public static void main (String [] args)
+  {
+    graph g = new graph (5);
+    g.addEdges(1,2,1);
+    g.addEdges(1,4,5);
+    g.addEdges(2,2,0);
+    g.addEdges(3,4,4);
+    g.addEdges(4,5,10);
+    g.addEdges(3,5,5);
+    for (int i = 0; i < 5; i++)
+    {
+      System.out.println((i+1) + ": " + g.e.source + " " + g.e.dest + " " + g.e.weight);
+    }
   }
 }
