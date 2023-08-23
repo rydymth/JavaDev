@@ -4,9 +4,6 @@
  *  Linked list and graph for the vertices
  *  arrays for weighted edges (think of something)
  * */
-
-import sun.font.TrueTypeGlyphMapper;
-
 class Edges {
   int source;
   int dest;
@@ -64,7 +61,7 @@ class Node {
 		}
 		while(current != null)
 		{
-			System.out.print((current.data + 1) + "->");
+			System.out.print((current.data + 1) + " ");
 			current = current.next;
 		}
 	}
@@ -84,7 +81,7 @@ class graph {
   int distance [];
   boolean visited [];
   private Node [] list;
-  Edges e = new Edges();
+  Edges e[];
   graph (int v)
   {
     distance = new int[v];
@@ -134,6 +131,14 @@ class graph {
    * This wll NOT show the bidirectional connection or additional connections.
    * I.E. if 1 -> 3 and 3 -> 5 it wont show 1 -> 3 5. */
   void dispAdjList() {
+    for (int i = 0; i < this.v; i++) {
+      System.out.print("\n" + (i + 1) + ": ");
+      list[i].display();
+      System.out.println();
+    }
+  }
+
+  void dispAdjListwWeights() {
     for (int i = 0; i < this.v; i++) {
       System.out.print("\n" + (i + 1) + ": ");
       list[i].display();
@@ -229,13 +234,10 @@ public class dij
     graph g = new graph (5);
     g.addEdges(1,2,1);
     g.addEdges(1,4,5);
-    g.addEdges(2,2,0);
+    g.addEdges(2,4,0);
     g.addEdges(3,4,4);
     g.addEdges(4,5,10);
     g.addEdges(3,5,5);
-    for (int i = 0; i < 5; i++)
-    {
-      System.out.println((i+1) + ": " + g.e.source + " " + g.e.dest + " " + g.e.weight);
-    }
+    g.dispAdjList();
   }
 }
