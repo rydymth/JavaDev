@@ -14,6 +14,11 @@ class Edges {
     this.dest = dest;
     this.weight = weight;
   }
+
+  int Weight ()
+  {
+    return this.weight;
+  }
 }
 
 class Node {
@@ -86,26 +91,25 @@ class graph {
   {
     distance = new int[v];
     visited = new boolean[v];
+    e = new Edges[v];
     for (int i = 0; i < v; i++)
     {
       distance[i] = -1;
       visited[i] = false;
+      list[i] = new Node();
+      e[i] = new Edges();
     }
     this.v = v;
     list = new Node[this.v];
     color = new int[this.v];
-    for (int i = 0; i < v; i++)
-    {
-      list[i] = new Node();
-    }
     color = new int[this.v];
   }
 
   //Since it a undirected graph,
   //Everytime we add u,v we must also add v,u
   void addEdges(int u, int v, int weights) {
-    e.addEdges(u - 1, v - 1, weights);
-    e.addEdges(v - 1, u - 1, weights);
+    e[u - 1].addEdges(u - 1, v - 1, weights);
+    e[v - 1].addEdges(v - 1, u - 1, weights);
     list[u - 1].add(v - 1);
     list[v - 1].add(u - 1);
   }
@@ -238,6 +242,9 @@ public class dij
     g.addEdges(3,4,4);
     g.addEdges(4,5,10);
     g.addEdges(3,5,5);
-    g.dispAdjList();
+    for (int i = 0; i < 5; i++)
+    {
+      System.out.println((i + 1) + ": " + g.e[i].source + "->" + g.e[i].dest + " = " + g.e[i].weight);
+    }
   }
 }
