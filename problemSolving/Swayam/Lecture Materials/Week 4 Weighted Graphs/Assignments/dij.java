@@ -4,6 +4,8 @@
  *  Linked list and graph for the vertices
  *  arrays for weighted edges (think of something)
  * */
+
+import java.util.*;
 class Edges {
   int source;
   int dest;
@@ -86,30 +88,34 @@ class graph {
   int distance [];
   boolean visited [];
   private Node [] list;
-  Edges e[];
+  Edges e[][];
   graph (int v)
   {
     distance = new int[v];
     visited = new boolean[v];
-    e = new Edges[v];
+    e = new Edges[v][v];
+    this.v = v;
+    list = new Node[this.v];
+    color = new int[this.v];
+    color = new int[this.v];
     for (int i = 0; i < v; i++)
     {
       distance[i] = -1;
       visited[i] = false;
       list[i] = new Node();
-      e[i] = new Edges();
+      for (int j = 0; j < v; j++)
+      {
+        e[i][j] = new Edges();
+        e[i][j].weight = -1;
+      }
     }
-    this.v = v;
-    list = new Node[this.v];
-    color = new int[this.v];
-    color = new int[this.v];
   }
 
   //Since it a undirected graph,
   //Everytime we add u,v we must also add v,u
-  void addEdges(int u, int v, int weights) {
-    e[u - 1].addEdges(u - 1, v - 1, weights);
-    e[v - 1].addEdges(v - 1, u - 1, weights);
+  void addEdges(int u, int weights, int v) {
+    e[u - 1][v - 1].addEdges(u - 1, v - 1, weights);
+    e[v - 1][u - 1].addEdges(v - 1, u - 1, weights);
     list[u - 1].add(v - 1);
     list[v - 1].add(u - 1);
   }
@@ -143,9 +149,19 @@ class graph {
   }
 
   void dispAdjListwWeights() {
-    for (int i = 0; i < this.v; i++) {
-      System.out.print("\n" + (i + 1) + ": ");
-      list[i].display();
+    for (int i = 0; i < this.v; i++)
+    {
+      System.out.print("\n" + (i+1) + ": ");
+      Node current = list[i];
+      if (current == null)
+      {
+        System.out.print("EMPTY");
+      }
+      while(current != null)
+      {
+        System.out.print((current.data + 1) + " (" + (this.e[i][current.data].weight) + ") ");
+        current = current.next;
+      }
       System.out.println();
     }
   }
@@ -235,16 +251,10 @@ public class dij
 
   public static void main (String [] args)
   {
-    graph g = new graph (5);
-    g.addEdges(1,2,1);
-    g.addEdges(1,4,5);
-    g.addEdges(2,4,0);
-    g.addEdges(3,4,4);
-    g.addEdges(4,5,10);
-    g.addEdges(3,5,5);
-    for (int i = 0; i < 5; i++)
-    {
-      System.out.println((i + 1) + ": " + g.e[i].source + "->" + g.e[i].dest + " = " + g.e[i].weight);
-    }
+    Scanner sc = new Scanner(System.in);
+    int M = sc.nextInt();
+    int st = sc.nextInt();
+    int dest = sc.nextInt();
+    graph g = new graph(M)
   }
 }
