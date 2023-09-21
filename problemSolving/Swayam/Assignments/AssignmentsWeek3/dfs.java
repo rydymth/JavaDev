@@ -1,5 +1,4 @@
-import java.util.Random;
-import java.util.random.*;
+import java.util.Scanner;
 class stack
 {
   Integer [] stack;
@@ -80,20 +79,29 @@ class linkedList {
   int getSize() {
     return this.size;
   }
+  
+  int getLast() {
+    node n = this.head;
+    while (n.next != null) { n = n.next; }
+    return n.Data;
+  }
 }
 
 class graph {
+  int numOfComponents = 0;
+  boolean dfsDone = false;
   linkedList l [];
   int nV;
-  linkedList dfsNodes;
+  boolean [] visited;
   graph (int v) {
     this.nV = v;
     l = new linkedList[v];
+    visited = new boolean[nV];
     for (int i = 0; i < v; i++)
     {
+      visited[i] = false;
       l[i] = new linkedList();
     }
-    dfsNodes = new linkedList();
   }
 
   void addEdge (int source, int dest)
@@ -113,12 +121,18 @@ class graph {
     return ret;
   }
 
-  void DFSstack (int s) {
-    boolean [] visited = new boolean[nV];
-    for (int i = 0; i < nV; i++)
-    {
-      visited[i] = false;
+  int connectedComponents () {
+    int count = 0;
+    for (int i = 0; i < this.nV; i++) {
+      linkedList tmp = DFSstack(i);
+      count++; 
+      i = tmp.getLast();
     }
+    return count;
+  }
+
+  linkedList DFSstack (int s) {
+    linkedList dfsNodes = new linkedList();
     stack st = new stack(nV);
     st.push(s);
     visited[s] = true;
@@ -134,10 +148,11 @@ class graph {
         }
       }
     }
+    return dfsNodes;
   }
 
   void getDfsNodes (int s) {
-    this.DFSstack(s);
+    linkedList dfsNodes = this.DFSstack(s);
     node tmp = dfsNodes.head;
     while (tmp != null) {
       if (tmp.next == null) {
@@ -153,11 +168,15 @@ class graph {
 public class dfs {
   public static void main( String [] args)
   {
-    graph g = new graph(5);
-    g.addEdge(1, 2);
-    g.addEdge(2, 3);
-    g.addEdge(2, 4);
-    g.addEdge(4, 5);
-    g.getDfsNodes(0);
+    Scanner sc = new Scanner(System.in);
+    int N = sc.nextInt();
+    int M = sc.nextInt();
+    int K = sc.nextInt();
+    graph g = new graph(N + 2);
+    for (int i = 0; i < M; i++) {
+      g.addEdge(sc.nextInt(), sc.nextInt());
+    }
+    g.addEdge(11, 12);
+    System.out.println(g.connectedComponents());
   }
 }
