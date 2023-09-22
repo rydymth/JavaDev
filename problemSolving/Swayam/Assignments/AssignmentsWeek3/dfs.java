@@ -56,6 +56,7 @@ class node {
 class linkedList {
   node head;
   int size;
+  int nodeID;
   linkedList ()
   {
     size = 0;
@@ -88,19 +89,22 @@ class linkedList {
 }
 
 class graph {
-  int numOfComponents = 0;
-  boolean dfsDone = false;
+  boolean flagDone = false;
   linkedList l [];
-  int nV;
+  linkedList dfsNodes [];
   boolean [] visited;
+  int nV;
+
   graph (int v) {
     this.nV = v;
     l = new linkedList[v];
+    dfsNodes = new linkedList[v];
     visited = new boolean[nV];
     for (int i = 0; i < v; i++)
     {
       visited[i] = false;
       l[i] = new linkedList();
+      dfsNodes[i] = new linkedList();
     }
   }
 
@@ -121,52 +125,48 @@ class graph {
     return ret;
   }
 
-  int connectedComponents () {
-    int count = 0;
-    for (int i = 0; i < this.nV; i++) {
-      linkedList tmp = DFSstack(i);
-      count++; 
-      i = tmp.getLast();
-    }
-    return count;
-  }
-
-  linkedList DFSstack (int s) {
-    linkedList dfsNodes = new linkedList();
-    stack st = new stack(nV);
-    st.push(s);
-    visited[s] = true;
-    while (st.getSize() != 0) {
-      int t = st.pop();
-      dfsNodes.addNode(t);
-      int [] tmp = adjList(t);
+  void DFSstack () {
+    this.flagDone = true;
+    for (int s = 0; s < this.nV; s++) {
+      linkedList dfsNodes = new linkedList();
+      stack st = new stack(nV);
+      st.push(s);
+      visited[s] = true;
+      while (st.getSize() != 0) {
+        int t = st.pop();
+        dfsNodes.addNode(t);
+        int [] tmp = adjList(t);
       for (int i = 0; i < tmp.length; i++)
-      {
-        if (visited[tmp[i]] == false) {
-          visited[tmp[i]] = true;
-          st.push(tmp[i]);
+        {
+          l[tmp[i]].nodeID = s;
+          if (visited[tmp[i]] == false) {      
+            visited[tmp[i]] = true;
+            st.push(tmp[i]);
         }
       }
     }
-    return dfsNodes;
+    }
   }
-
+  
   void getDfsNodes (int s) {
-    linkedList dfsNodes = this.DFSstack(s);
-    node tmp = dfsNodes.head;
-    while (tmp != null) {
-      if (tmp.next == null) {
-        System.out.print((tmp.Data + 1));
-        return;
-      }
-      else { System.out.print((tmp.Data + 1)+ " -> "); }
-      tmp = tmp.next;
+    if (this.flagDone == false)
+      this.DFSstack();
+    else {
+      node tmp = this.dfsNodes[s].head;
+      while (tmp != null) {
+        if (tmp.next == null) {
+          System.out.print((tmp.Data + 1));
+          return;
+        }
+        else { System.out.print((tmp.Data + 1)+ " -> "); }
+        tmp = tmp.next;
+    }
     }
   }
 }
 
 public class dfs {
-  public static void main( String [] args)
+  public static void main(String [] args)
   {
     Scanner sc = new Scanner(System.in);
     int N = sc.nextInt();
@@ -176,7 +176,11 @@ public class dfs {
     for (int i = 0; i < M; i++) {
       g.addEdge(sc.nextInt(), sc.nextInt());
     }
-    g.addEdge(11, 12);
-    System.out.println(g.connectedComponents());
+    
+    g.DFSstack();
+    for (int i = 0; i < g.nV; i++)
+    {
+      System.out.print((g.l[i].nodeID + 1) + "->");
+    }
   }
 }
