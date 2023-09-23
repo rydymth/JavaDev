@@ -96,10 +96,13 @@ class graph {
   boolean [] visited;
   boolean doneFlag = false;
   int nV;
+  int totalWeight = 0;
+  int [] weights;
 
   graph (int v) {
     this.nV = v;
     l = new linkedList[v];
+    weights = new int[this.nV];
     res = new linkedList[v];
     visited = new boolean[v];
     for (int i = 0; i < v; i++)
@@ -134,6 +137,7 @@ class graph {
     visited[s] = true;
     while (st.getSize() != 0) {
       int t = st.pop();
+
       dfsNodes.addNode(t);
       int [] tmp = adjList(t);
     for (int i = 0; i < tmp.length; i++)
@@ -150,6 +154,8 @@ class graph {
   
   // We should never implicitly call the dfsStack function. Only use this global function to compute dfs globally.
   void dfsNodes () {
+    if (flagDone) return;
+    flagDone = true;
     for (int i = 0; i < this.nV; i++) {
       if (!visited[i]) {
         this.count++;
@@ -180,10 +186,58 @@ class graph {
   }
 }
 
+class mima {
+  int ret;
+  int [] arr;
+}
+
 public class dfs {
   
-  public static min (int [] arr) {
-    
+  public static mima min (int [] arr) {
+    mima m = new mima();
+    int min = arr [0];
+    for (int i = 0; i < arr.length; i++)
+    {
+      if (arr[i] < min) {
+        min = arr[i];
+      }
+    }
+    int [] retArr = new int[arr.length - 1];
+    int i = 0;
+    while (i < arr.length)
+    {
+      if (arr[i] == min)
+        continue;
+      retArr[i] = arr[i];
+      i++;
+    }
+    m.arr = retArr;
+    m.ret = min;
+    return m;
+  }
+
+
+  public static mima max (int [] arr) {
+    mima m = new mima();
+    int max = arr [0];
+    for (int i = 0; i < arr.length; i++)
+    {
+      if (arr[i] > max) {
+        max = arr[i];
+      }
+    }
+    int [] retArr = new int[arr.length - 1];
+    int i = 0;
+    while (i < arr.length)
+    {
+      if (arr[i] == max)
+        continue;
+      retArr[i] = arr[i];
+      i++;
+    }
+    m.arr = retArr;
+    m.ret = max;
+    return m;
   }
 
   public static void main(String [] args)
@@ -193,15 +247,27 @@ public class dfs {
     int M = sc.nextInt();
     int K = sc.nextInt();
     graph g = new graph(N);
+    
+    // get all the edges
     for (int i = 0; i < M; i++) {
       g.addEdge(sc.nextInt(), sc.nextInt());
     }
-    System.out.println(g.numConnected());
-    System.out.println(g.res.length);
-    for (int i = 0; i < g.res.length; i++)
+    
+    // get num of museums
+    for (int i = 0; i < g.nV; i++)
     {
-      g.getDfsNodes(i);
-      System.out.println();
+      g.weights[i] = sc.nextInt();
     }
+    int components = g.numConnected();
+    if (components < K)
+      System.out.println(-1);
+    else {
+      int sum = 0;
+      for (int i = 0; i < K; i++)
+      {
+
+      }
+    }
+ 
   }
 }
