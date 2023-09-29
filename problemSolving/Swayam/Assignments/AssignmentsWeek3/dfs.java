@@ -86,6 +86,18 @@ class linkedList {
     while (n.next != null) { n = n.next; }
     return n.Data;
   }
+
+  void dispNodeStruct () {
+    node tmp = this.head;
+    while (tmp != null) 
+    {
+      if (tmp.next != null)
+        System.out.print((tmp.Data + 1) + " -> ");
+      else
+        System.out.println((tmp.Data + 1) + " ");
+      tmp = tmp.next;
+    }
+  }
 }
 
 class graph {
@@ -137,19 +149,38 @@ class graph {
     visited[s] = true;
     while (st.getSize() != 0) {
       int t = st.pop();
-
+      totalWeight = totalWeight + weights[t];
       dfsNodes.addNode(t);
       int [] tmp = adjList(t);
-    for (int i = 0; i < tmp.length; i++)
-      {
-        l[tmp[i]].nodeID = s;
-        if (visited[tmp[i]] == false) {
-          visited[tmp[i]] = true;
-          st.push(tmp[i]);
+      for (int i = 0; i < tmp.length; i++)
+        {
+          l[tmp[i]].nodeID = s;
+          if (visited[tmp[i]] == false) {
+            visited[tmp[i]] = true;
+            st.push(tmp[i]);
+          }
         }
-      }
     }
     return dfsNodes;
+  }
+ 
+  void DFSstackVoid (int s) { 
+    stack st = new stack(nV);
+    st.push(s);
+    visited[s] = true;
+    while (st.getSize() != 0) {
+      int t = st.pop();
+      totalWeight = totalWeight + weights[t];
+      int [] tmp = adjList(t);
+        for (int i = 0; i < tmp.length; i++)
+          {
+            l[tmp[i]].nodeID = s;
+            if (visited[tmp[i]] == false) {
+              visited[tmp[i]] = true;
+              st.push(tmp[i]);
+          }
+        }
+    }
   }
   
   // We should never implicitly call the dfsStack function. Only use this global function to compute dfs globally.
@@ -167,6 +198,11 @@ class graph {
   int numConnected () {
     if (!flagDone)
       this.dfsNodes();
+    this.totalWeight = 0;
+    for (int i = 0; i < this.nV; i++)
+    {
+      this.visited[i] = false;
+    }
     return this.count;
   }
   
@@ -184,60 +220,39 @@ class graph {
       tmp = tmp.next;
     }
   }
-}
 
-class mima {
-  int ret;
-  int [] arr;
+  void setWeights(int i, int x) {
+    this.weights[i] = x;
+  }
 }
 
 public class dfs {
   
-  public static mima min (int [] arr) {
-    mima m = new mima();
+  public static int min (int [] arr) {
     int min = arr [0];
+    int ind = 0;
     for (int i = 0; i < arr.length; i++)
     {
-      if (arr[i] < min) {
+      if (arr[i] < min && arr[i] >= 0) {
         min = arr[i];
+        ind = i;
       }
     }
-    int [] retArr = new int[arr.length - 1];
-    int i = 0;
-    while (i < arr.length)
-    {
-      if (arr[i] == min)
-        continue;
-      retArr[i] = arr[i];
-      i++;
-    }
-    m.arr = retArr;
-    m.ret = min;
-    return m;
+    return ind;
   }
 
 
-  public static mima max (int [] arr) {
-    mima m = new mima();
+  public static int max (int [] arr) {
     int max = arr [0];
+    int ind = 0;
     for (int i = 0; i < arr.length; i++)
     {
-      if (arr[i] > max) {
+      if (arr[i] > max && arr[i] >= 0) {
         max = arr[i];
+        ind = i;
       }
     }
-    int [] retArr = new int[arr.length - 1];
-    int i = 0;
-    while (i < arr.length)
-    {
-      if (arr[i] == max)
-        continue;
-      retArr[i] = arr[i];
-      i++;
-    }
-    m.arr = retArr;
-    m.ret = max;
-    return m;
+    return ind;
   }
 
   public static void main(String [] args)
@@ -252,22 +267,32 @@ public class dfs {
     for (int i = 0; i < M; i++) {
       g.addEdge(sc.nextInt(), sc.nextInt());
     }
-    
+
     // get num of museums
     for (int i = 0; i < g.nV; i++)
     {
-      g.weights[i] = sc.nextInt();
+      g.setWeights(i, sc.nextInt());
     }
+
     int components = g.numConnected();
     if (components < K)
       System.out.println(-1);
     else {
-      int sum = 0;
       for (int i = 0; i < K; i++)
       {
-
+        if (i % 2 == 0)
+        {
+          int max = max(g.weights);
+          g.DFSstackVoid(max);
+          g.weights[max] = -1;
+        }
+        else {
+          int min = min(g.weights);
+          g.DFSstackVoid(min);
+          g.weights[min] = -1;
+        }
       }
+      System.out.println(g.totalWeight);
     }
- 
   }
 }
