@@ -1,10 +1,14 @@
+import java.util.Scanner;
+
 // Stack implementation
 class stack {
+  int size;
   int [] arr;
   int ctr = 0;
   
   stack (int n)
   {
+    size = 0;
     arr = new int[n];
   }
 
@@ -12,11 +16,13 @@ class stack {
   {
     arr[ctr] = v;
     ctr++;
+    size++;
   }
 
   int pop() {
     int ret = arr[ctr - 1];
     ctr--;
+    size--;
     return ret;
   }
 }
@@ -72,7 +78,6 @@ class linkedList {
 class graph {
   linkedList [] Nodes;
   int nV;
-  stack s;
   boolean [] visited;
 
   // Constructor
@@ -80,7 +85,6 @@ class graph {
     this.nV = nV;
     Nodes = new linkedList[nV];
     visited = new boolean[nV];
-    s = new stack(nV);
     for (int i = 0; i < nV; i++)
     {
       Nodes[i] = new linkedList();
@@ -109,11 +113,43 @@ class graph {
   // dfs
   void dfs(int s)
   {
-    this.s.push(s);
-
+    stack st = new stack(nV);
+    st.push(s);
+    visited[s] = true;
+    while (st.size != 0)
+    {
+      int t = st.pop();
+      int [] adjlist = this.adjList(t);
+      System.out.print((adjlist[i] + 1) + " -> ");
+      for (int i = 0; i < adjlist.length; i++)
+      {
+        if (!visited[adjlist[i]])
+        {
+          visited[adjlist[i]] = true;
+          st.push(adjlist[i]);
+        }
+      }
+    }
   }
 }
 
 public class H {
-
+  public static void main (String [] args)
+  {
+    Scanner sc = new Scanner(System.in);
+    int t = sc.nextInt();
+    for (int i = 0; i < t; i++)
+    {
+      System.out.println("Test Case: " + (i + 1));
+      int n = sc.nextInt();
+      int mp = sc.nextInt();
+      int vp = sc.nextInt();
+      graph g = new graph(n);
+      for (int k = 0; k < n; k++)
+      {
+        g.addEdge(sc.nextInt(), sc.nextInt());
+      }
+      g.dfs(0);
+   }
+  }
 }
