@@ -124,20 +124,24 @@ class graph {
     {
       int t = st.pop();
       int [] adjlist = this.adjList(t);
-      System.out.print((t + 1) + " -> ");
+      // System.out.print((t + 1) + " -> ");
+      System.out.println("The stack pop right now is :" + (t+1) + "\nAnd the adj list is");
       for (int i = 0; i < adjlist.length; i++)
       {
+        System.out.print((adjlist[i] + 1) + " \n");
         if (!visited[adjlist[i]])
         {
           parents[adjlist[i]] = t;
           visited[adjlist[i]] = true;
           st.push(adjlist[i]);
         }
-        else if (visited[adjlist[i]] && isParent(adjlist[i], t))
+        else if (visited[adjlist[i]] && isParent(t, adjlist[i]))
         {
+          System.out.println((adjlist[i]+1) + " is parent of " + (t + 1));
           numCycles++;
         }
       }
+      System.out.println();
     }
   }
   
