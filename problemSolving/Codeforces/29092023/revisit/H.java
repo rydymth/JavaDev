@@ -77,14 +77,17 @@ class linkedList {
 
 class graph {
   linkedList [] Nodes;
+  int parents[];
   int nV;
   boolean [] visited;
+  int numCycles = 0;
 
   // Constructor
   graph (int nV) {
     this.nV = nV;
     Nodes = new linkedList[nV];
     visited = new boolean[nV];
+    parents = new int[nV];
     for (int i = 0; i < nV; i++)
     {
       Nodes[i] = new linkedList();
@@ -110,26 +113,41 @@ class graph {
     return adj;
   }
 
-  // dfs
+  // dfs with cycle implementation
   void dfs(int s)
   {
     stack st = new stack(nV);
     st.push(s);
     visited[s] = true;
+    parents[s] = -1; //-1 represents the root
     while (st.size != 0)
     {
       int t = st.pop();
       int [] adjlist = this.adjList(t);
-      System.out.print((adjlist[i] + 1) + " -> ");
+      System.out.print((t + 1) + " -> ");
       for (int i = 0; i < adjlist.length; i++)
       {
         if (!visited[adjlist[i]])
         {
+          parents[adjlist[i]] = t;
           visited[adjlist[i]] = true;
           st.push(adjlist[i]);
         }
+        else if (visited[adjlist[i]] && isParent(adjlist[i], t))
+        {
+          numCycles++;
+        }
       }
     }
+  }
+  
+  boolean isParent(int c, int p)
+  {
+    return dispParent(c) == p;
+  }
+
+  int dispParent(int s) {
+    return parents[s];
   }
 }
 
@@ -150,6 +168,12 @@ public class H {
         g.addEdge(sc.nextInt(), sc.nextInt());
       }
       g.dfs(0);
+      for (int u = 0; u < n; u++)
+      {
+        System.out.println("Parent of " + (u + 1) + ": " + (g.dispParent(u) + 1));
+      }
+      System.out.println("Number of cycles:\nTheoretical: 1\nResult: " + g.numCycles);
    }
+   sc.close();
   }
 }
