@@ -25,6 +25,13 @@ class stack {
     size--;
     return ret;
   }
+  
+  void printStack () {
+    for (int i = 0; i < this.size; i++)
+    {
+      System.out.println(arr[i]);
+    }
+  }
 }
 
 class node {
@@ -117,31 +124,31 @@ class graph {
   void dfs(int s)
   {
     stack st = new stack(nV);
+    int prev[] = new int[nV];
     st.push(s);
     visited[s] = true;
     parents[s] = -1; //-1 represents the root
+    int pre = s;
     while (st.size != 0)
     {
       int t = st.pop();
+      prev[t] = pre;
+      pre = t;
       int [] adjlist = this.adjList(t);
-      // System.out.print((t + 1) + " -> ");
-      System.out.println("The stack pop right now is :" + (t+1) + "\nAnd the adj list is");
+      System.out.print((t + 1) + " -> ");
       for (int i = 0; i < adjlist.length; i++)
       {
-        System.out.print((adjlist[i] + 1) + " \n");
         if (!visited[adjlist[i]])
         {
           parents[adjlist[i]] = t;
           visited[adjlist[i]] = true;
           st.push(adjlist[i]);
         }
-        else if (visited[adjlist[i]] && isParent(t, adjlist[i]))
+        else if (visited[adjlist[i]] && isParent(t, adjlist[i]) && (dispParent(adjlist[i]) != prev[adjlist[i]]))
         {
-          System.out.println((adjlist[i]+1) + " is parent of " + (t + 1));
           numCycles++;
         }
       }
-      System.out.println();
     }
   }
   
@@ -164,14 +171,14 @@ public class H {
     {
       System.out.println("Test Case: " + (i + 1));
       int n = sc.nextInt();
-      int mp = sc.nextInt();
-      int vp = sc.nextInt();
+      int e = sc.nextInt();
       graph g = new graph(n);
-      for (int k = 0; k < n; k++)
+      for (int k = 0; k < e; k++)
       {
         g.addEdge(sc.nextInt(), sc.nextInt());
       }
       g.dfs(0);
+      System.out.println();
       for (int u = 0; u < n; u++)
       {
         System.out.println("Parent of " + (u + 1) + ": " + (g.dispParent(u) + 1));
