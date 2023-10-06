@@ -99,6 +99,7 @@ class graph {
     {
       Nodes[i] = new linkedList();
       visited[i] = false;
+      parents[i] = -1;
     }
   }
 
@@ -123,37 +124,27 @@ class graph {
   // dfs with cycle implementation
   void dfs(int s)
   {
-    stack st = new stack(nV);
-    int prev[] = new int[nV];
-    st.push(s);
     visited[s] = true;
-    parents[s] = -1; //-1 represents the root
-    int pre = s;
-    while (st.size != 0)
+    int [] adjlist = adjList(s);
+    for (int i : adjlist)
     {
-      int t = st.pop();
-      prev[t] = pre;
-      pre = t;
-      int [] adjlist = this.adjList(t);
-      System.out.print((t + 1) + " -> ");
-      for (int i = 0; i < adjlist.length; i++)
+      System.out.println("Looking at: " + (i+1) + " node before: " + (s+1));
+      if (!visited[i])
+        {
+          parents[i] = s;
+          dfs(i);
+        }
+      else if(visited[i] && (parents[i] != s))
       {
-        if (!visited[adjlist[i]])
-        {
-          parents[adjlist[i]] = t;
-          visited[adjlist[i]] = true;
-          st.push(adjlist[i]);
-        }
-        else if (visited[adjlist[i]] && isParent(t, adjlist[i]) && (dispParent(adjlist[i]) != prev[adjlist[i]]))
-        {
-          numCycles++;
-        }
+        numCycles++;
+        System.out.println("Looking at " + (i+1) + "where parents are: " + (s + 1));
       }
     }
   }
   
   boolean isParent(int c, int p)
   {
+    // System.out.println("Checking if parent of " + c + " is " + p + " which is " + (dispParent(c)==p));
     return dispParent(c) == p;
   }
 
@@ -171,9 +162,10 @@ public class H {
     {
       System.out.println("Test Case: " + (i + 1));
       int n = sc.nextInt();
-      int e = sc.nextInt();
+      int m = sc.nextInt();
+      int v = sc.nextInt();
       graph g = new graph(n);
-      for (int k = 0; k < e; k++)
+      for (int k = 0; k < n; k++)
       {
         g.addEdge(sc.nextInt(), sc.nextInt());
       }
